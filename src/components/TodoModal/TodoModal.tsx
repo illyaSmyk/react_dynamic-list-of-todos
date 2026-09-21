@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { User } from '../../types/User';
 import { getUser } from '../../api';
 import { useEffect } from 'react';
+import classNames from 'classnames';
 
 interface Props {
   todo: Todo;
@@ -15,10 +16,11 @@ export const TodoModal: React.FC<Props> = ({ todo, onClose }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    setUser(null);
     getUser(todo.userId).then(data => {
       setUser(data);
     });
-  }, [todo.userId]);
+  }, [todo]);
 
   return (
     <div className="modal is-active" data-cy="modal">
@@ -53,9 +55,10 @@ export const TodoModal: React.FC<Props> = ({ todo, onClose }) => {
             <p className="block" data-cy="modal-user">
               {/* <strong className="has-text-success">Done</strong> */}
               <strong
-                className={
-                  todo.completed ? 'has-text-success' : 'has-text-danger'
-                }
+                className={classNames({
+                  'has-text-success': todo.completed,
+                  'has-text-danger': !todo.completed,
+                })}
               >
                 {todo.completed ? `Done` : `Planned`}
               </strong>
